@@ -67,112 +67,69 @@
  * =============================================================================
  */
 
-
-
-
-
-
-import { createQrSession } from "@/api";
-import { useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import QRCode from "react-native-qrcode-svg";
+import { apiPost } from "../api/client";
+import { useEffect, useState } from "react";
 
+export default function GenerateQRC() {
+  const [token, setToken] = useState<string | null>(null);
+  const [expires, setExpires] = useState<number>(30);
+  const [loading, setLoading] = useState<boolean>(true);
 
-export default function GenerateQRScreen() {
-  const [loading, setLoading] = useState(false);
-  const [qrToken, setQrToken] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const generateQR = async () => {
+  async function refreshSession() {
     try {
       setLoading(true);
-      setError(null);
-      setQrToken(null);
-
-      // Call your API helper instead of raw fetch
-      const data = await createQrSession("MERCHANT_123");
-
-      if (!data || !data.token) {
-        throw new Error("Invalid response from server");
-      }
-
-      setQrToken(data.token);
-    } catch (err: any) {
-      setError(err.message || "Failed to generate QR");
+      const data = await apiPost("/session/create", {});
+      setToken(data.token);
+      setExpires(30);
+    } catch (err) {
+      console.error("Session error:", err);
     } finally {
       setLoading(false);
     }
-  };
+  }
+
+  useEffect(() => {
+    refreshSession();
+  }, []);
+
+  useEffect(() => {
+    if (expires <= 0) {
+      refreshSession();
+      return;
+    }
+
+    const timer = setTimeout(() => setExpires(expires - 1), 1000);
+    return () => clearTimeout(timer);
+  }, [expires]);
+
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" />
+        <Text>Generating secure QR session…</Text>
+      </View>
+    );
+  }
 
   return (
-
-    <View style={styles.container}>
-      <Text style={styles.title}>Generate Payment QR</Text>
-
-      {loading && <ActivityIndicator size="large" color="#007AFF" />}
-
-      {error && <Text style={styles.error}>{error}</Text>}
-
-      {qrToken && (
-        <View style={styles.qrContainer}>
-          <QRCode value={qrToken} size={220} />
-          <Text style={styles.tokenLabel}>Session Token:</Text>
-          <Text style={styles.token}>{qrToken}</Text>
-        </View>
-      )}
-
-      <TouchableOpacity style={styles.button} onPress={generateQR}>
-        <Text style={styles.buttonText}>Generate QR</Text>
-      </TouchableOpacity>
+    <View style={styles.center}>
+      {token && <QRCode value={token} size={240} />}
+      <Text style={styles.timer}>Expires in {expires}s</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  center: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    padding: 20,
-    backgroundColor: "#F5F9FF",
   },
-  title: {
-    fontSize: 26,
-    fontWeight: "700",
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 14,
-    paddingHorizontal: 30,
-    borderRadius: 10,
+  timer: {
     marginTop: 20,
-  },
-  buttonText: {
-    color: "#fff",
     fontSize: 18,
-    fontWeight: "600",
-  },
-  qrContainer: {
-    alignItems: "center",
-    marginVertical: 20,
-    padding: 20,
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    elevation: 3,
-  },
-  tokenLabel: {
-    marginTop: 10,
-    fontSize: 14,
-    color: "#555",
-  },
-  token: {
-    fontSize: 12,
-    color: "#333",
-    marginTop: 4,
-  },
-  error: {
-    color: "red",
-    marginBottom: 10,
+    fontWeight: "bold",
   },
 });

@@ -97,7 +97,8 @@ export default function ScanQR() {
     setScanned(true);
 
     try {
-      const response = await fetch("http://192.168.1.205:3000/api/qr/verify", {
+     const response = await fetch("http://192.168.1.205:3000/session/verify", {
+
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ token: data }),
