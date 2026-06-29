@@ -1,50 +1,58 @@
-# Welcome to your Expo app 👋
+HoloTap Mobile — README (Preview)
+(Not committing this yet — just giving you the shape)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Overview
+HoloTap Mobile is the consumer‑facing and merchant‑facing mobile application for the HoloTap payment system. Built using Expo SDK 56, React Native 0.86, and Expo Router v6, it provides secure QR‑based payment initiation, session verification, and transaction processing.
 
-## Get started
+Core Features
+QR session generation
 
-1. Install dependencies
+QR scanning and verification
 
-   ```bash
-   npm install
-   ```
+Secure session token flow
 
-2. Start the app
+Payment entry and processing
 
-   ```bash
-   npx expo start
-   ```
+Animated payment result screen (Flow 8 — coming tomorrow)
 
-In the output, you'll find options to open the app in a
+Merchant dashboard (in progress)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Tech Stack
+Expo SDK 56
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+React Native 0.86
 
-## Get a fresh project
+Expo Router v6
 
-When you're ready, run:
+TypeScript
 
-```bash
-npm run reset-project
-```
+Node.js backend (HoloTapServer)
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+REST API with signed session tokens
 
-## Learn more
+Project Structure
+Code
+app/
+  generate-qrc.tsx
+  scan-qrc.tsx
+  payment.tsx
+  (tabs)/merchant-dashboard.tsx
+api/
+  client.ts
+Running the App
+Code
+npm install
+npx expo start
+Backend Requirements
+Requires HoloTapServer running at:
 
-To learn more about developing your project with Expo, look at the following resources:
+Code
+http://192.168.1.205:3000
+Flows Implemented
+Flow 5: QR Scan → Session Verification
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Flow 6: Payment Initialisation
 
-## Join the community
+Flow 7: Payment Submission
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Flow 8: Payment Result (tomorrow)
