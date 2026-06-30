@@ -72,9 +72,7 @@
 
 
 
-
-
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, router } from "expo-router";
 import { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 
@@ -107,7 +105,16 @@ export default function Payment() {
       const data = await res.json();
 
       if (data.success) {
-        Alert.alert("Payment Successful", "Your payment has been processed.");
+        // Navigate to Flow 8 — Payment Result Screen
+        router.push({
+          pathname: "/payment-result",
+          params: {
+            amount: amount.toString(),
+            merchantId: merchantId?.toString(),
+            sessionId: sessionId?.toString(),
+          },
+        });
+        return;
       } else {
         Alert.alert("Payment Failed", data.message || "Unable to process payment.");
       }
