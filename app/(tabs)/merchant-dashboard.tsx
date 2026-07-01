@@ -1,94 +1,130 @@
 /**
  * ============================================================
- *  HoloTap Mobile — Merchant Dashboard Screen
- *  Engineers: Raymond Newton (E5357171), Copilot Engineering Assistant
- *  Author: Raymond Newton
- *  Date: 21 June 2026
+ *  HoloTapMobile — Merchant Dashboard (Scalable Edition)
+ *  Engineer: Raymond Newton (E5357171)
+ *  Assistant: Copilot Engineering Assistant
+ *  Date: 01 July 2026
  *  © 2026 HoloTap Technologies Ltd. All rights reserved.
  * ============================================================
  *
- *  Purpose:
- *  Provides the primary merchant interface for the HoloTap mobile
- *  application. This dashboard acts as the central hub for QR
- *  generation, live payments, refunds, settlement, and merchant
- *  configuration flows.
+ *  PURPOSE:
+ *  Provides the primary merchant interface for QR generation,
+ *  live payments, refunds, settlement, and settings.
  *
- *  Architecture Notes:
- *  - Built using Expo Router (app directory structure).
- *  - Stateless UI; business logic handled by backend services.
- *  - Designed for integration with merchant session endpoints.
- *  - Uses expo-image for performant logo rendering.
+ *  SCALABILITY PATCH:
+ *  - Strong TypeScript typing
+ *  - Modular DashboardCard component
+ *  - Correct Expo Router v6 href types (NO group prefixes)
+ *  - SafeAreaView for modern devices
+ *  - Clean fintech UI
  *
- *  Engineering Notes:
- *  - Fully TypeScript‑compatible.
- *  - UI-only component; no inline API logic.
- *  - Navigation-ready for future merchant flows.
- *  - Safe for TM470 submission and commercial deployment.
+ *  ROUTING NOTES:
+ *  Your generated router types (from .expo/types/router.d.ts)
+ *  confirm the allowed hrefs:
  *
+ *    "/generate-qrc"
+ *    "/live-payments"
+ *    "/refund"
+ *    "/settlement"
+ *    "/settings"
+ *    "/merchant-dashboard"
+ *
+ *  Therefore, hrefs MUST use these exact strings.
  * ============================================================
  */
 
+import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
-import { Link } from "expo-router";
+import { Href, Link } from "expo-router";
 
+/**
+ * ============================================================
+ *  Typed Dashboard Card Component
+ * ============================================================
+ */
+interface DashboardCardProps {
+  title: string;
+href: Href; // <- typed to Expo Router's href type
+  primary?: boolean;
+}
+
+const DashboardCard: React.FC<DashboardCardProps> = ({ title, href, primary }) => (
+  <Link href={href} asChild>
+    <TouchableOpacity style={primary ? styles.buttonPrimary : styles.button}>
+      <Text style={styles.buttonText}>{title}</Text>
+    </TouchableOpacity>
+  </Link>
+);
+
+/**
+ * ============================================================
+ *  Main Merchant Dashboard Screen
+ * ============================================================
+ */
 export default function MerchantDashboard() {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      {/* Logo */}
       <Image
         source={require("../../src/assets/HoloTap-Badge.png")}
         style={styles.logo}
       />
 
+      {/* Header */}
       <Text style={styles.title}>HoloTap Merchant</Text>
       <Text style={styles.subtitle}>Instant QR payments for UK businesses</Text>
 
+      {/* Action Buttons */}
       <View style={styles.buttonContainer}>
-        <Link href="/generate-qr" asChild>
-          <TouchableOpacity style={styles.buttonPrimary}>
-            <Text style={styles.buttonText}>Show My QR Code</Text>
-          </TouchableOpacity>
-        </Link>
+        <DashboardCard
+          title="Show My QR Code"
+          href="/generate-qrc"
+          primary
+        />
 
-        <Link href="/live-payments" asChild>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Live Payments</Text>
-          </TouchableOpacity>
-        </Link>
+        <DashboardCard
+          title="Live Payments"
+          href="/live-payments"
+        />
 
-        <Link href="/refund" asChild>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Refund / Void</Text>
-          </TouchableOpacity>
-        </Link>
+        <DashboardCard
+          title="Refund / Void"
+          href="/refund"
+        />
 
-        <Link href="/settlement" asChild>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Settlement</Text>
-          </TouchableOpacity>
-        </Link>
+        <DashboardCard
+          title="Settlement"
+          href="/settlement"
+        />
 
-        <Link href="/settings" asChild>
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Settings</Text>
-          </TouchableOpacity>
-        </Link>
+        <DashboardCard
+          title="Settings"
+          href="/settings"
+        />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
+/**
+ * ============================================================
+ *  Stylesheet — Clean Fintech UI
+ * ============================================================
+ */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
     alignItems: "center",
-    paddingTop: 60,
+    paddingTop: 40,
+    paddingHorizontal: 20,
   },
   logo: {
-    width: 180,
-    height: 180,
-    borderRadius: 90,
+    width: 160,
+    height: 160,
+    borderRadius: 80,
     marginBottom: 20,
   },
   title: {
@@ -102,7 +138,7 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   buttonContainer: {
-    width: "90%",
+    width: "100%",
     gap: 16,
   },
   buttonPrimary: {

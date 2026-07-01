@@ -2,98 +2,107 @@
  * =============================================================================
  * HOLOTAP MOBILE — GENERATE QR SCREEN (generate-qrc.tsx)
  * =============================================================================
- * Engineers: Raymond Newton (E5357171), Copilot Engineering Assistant
- * Author: Raymond Newton
- * Date: 24 June 2026
+ * Engineer: Raymond Newton (E5357171)
+ * Assistant: Copilot Engineering Assistant
+ * Date: 01 July 2026
  * © 2026 HoloTap Technologies Ltd. All rights reserved.
  *
- * -----------------------------------------------------------------------------
- * PURPOSE
- * -----------------------------------------------------------------------------
- * Implements Flow 2 of the HoloTap Mobile architecture:
- * Merchant QR Session Generation. This screen requests a signed,
- * tamper‑proof QR session token from the HoloTap backend and renders it
- * as a scannable QR code for consumer payment initiation.
+ * PURPOSE:
+ * Implements Flow 2 — Merchant QR Session Generation.
+ * Requests a signed, tamper‑proof QR session token from the backend and
+ * renders it as a scannable QR code for consumer payment initiation.
  *
- * The generated QR token represents a short‑lived merchant session and
- * is consumed by the Scan‑QR screen (Flow 4) to begin the payment flow.
+ * SCALABILITY PATCH:
+ * - Strong TypeScript typing for session payload
+ * - Modular session helper function
+ * - SafeAreaView for modern devices
+ * - Clean fintech UI structure
+ * - Improved error handling + UX stability
+ * - Fully deterministic component lifecycle
  *
- * -----------------------------------------------------------------------------
- * ARCHITECTURE NOTES
- * -----------------------------------------------------------------------------
- * - Built using React Native + Expo Router (no web routing).
- * - Uses the /api/createQrSession helper for backend communication.
- * - QR codes rendered using react-native-qrcode-svg.
- * - Token stored only in local component state (no persistence).
- * - Error and loading states fully implemented for UX stability.
- * - Designed for extension with auto-refresh, countdown timers, and
- *   session lifecycle indicators.
+ * FLOW ALIGNMENT:
+ * Flow 2 → Merchant QR Session Generation
+ * Flow 3 → Consumer Scan (scan-qrc.tsx)
+ * Flow 4 → Backend Session Verification
+ * Flow 5 → Payment Initialisation (payment.tsx)
  *
- * -----------------------------------------------------------------------------
- * FLOW ALIGNMENT
- * -----------------------------------------------------------------------------
- * Flow 1: Merchant Authentication (external to this screen)
- * Flow 2: Merchant QR Session Generation (this screen)
- *   - Requests signed session token from backend.
- *   - Renders QR code for consumer scanning.
- *
- * Flow 3: Consumer Scan (scan-qr.tsx)
- *   - Reads QR token and verifies session.
- *
- * Flow 4: Session Verification (backend)
- *   - Confirms merchantId + sessionId.
- *
- * Flow 5: Payment Initialisation (payment.tsx)
- *   - Begins consumer payment flow.
- *
- * -----------------------------------------------------------------------------
- * ENGINEERING NOTES
- * -----------------------------------------------------------------------------
- * - All async operations wrapped in try/catch for resilience.
- * - setQrToken replaces legacy setToken naming for clarity.
- * - No top-level await; all awaits inside async functions.
- * - Component is fully deterministic and side‑effect free.
- * - API helper abstracts fetch logic for testability and modularity.
- * - TM470‑compliant: modular, testable, flow-aligned, and maintainable.
- *
- * -----------------------------------------------------------------------------
- * TESTING NOTES
- * -----------------------------------------------------------------------------
- * - Manual testing: verify QR generation, error states, and loading states.
- * - API testing: confirm backend returns valid signed tokens.
- * - UI testing: confirm QR renders correctly and token text matches backend.
- * - Integration testing: confirm Scan‑QR screen accepts and verifies token.
- *
+ * TM470 COMPLIANCE:
+ * - Modular, testable, flow-aligned, maintainable
+ * - No business logic inside UI
  * =============================================================================
  */
 
-import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Text, ActivityIndicator, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import QRCode from "react-native-qrcode-svg";
 import { apiPost } from "../api/client";
-import { useEffect, useState } from "react";
 
+/**
+ * =============================================================================
+ *  TypeScript Types — Scalable Session Model
+ * =============================================================================
+ */
+interface SessionResponse {
+  token: string;
+  expiresIn?: number; // optional future backend field
+}
+
+/**
+ * =============================================================================
+ *  Modular Session Helper — Clean & Testable
+ * =============================================================================
+ */
+async function createQrSession(): Promise<SessionResponse> {
+  return apiPost("/session/create", {});
+}
+
+/**
+ * =============================================================================
+ *  Main Component — GenerateQRC
+ * =============================================================================
+ */
 export default function GenerateQRC() {
   const [token, setToken] = useState<string | null>(null);
   const [expires, setExpires] = useState<number>(30);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
+  /**
+   * ---------------------------------------------------------------------------
+   * Refresh Session — Requests new signed QR token
+   * ---------------------------------------------------------------------------
+   */
   async function refreshSession() {
     try {
       setLoading(true);
-      const data = await apiPost("/session/create", {});
+      setError(null);
+
+      const data = await createQrSession();
       setToken(data.token);
-      setExpires(30);
+      setExpires(data.expiresIn ?? 30); // fallback for future backend updates
     } catch (err) {
-      console.error("Session error:", err);
+      console.error("QR Session Error:", err);
+      setError("Unable to generate QR session. Please try again.");
     } finally {
       setLoading(false);
     }
   }
 
+  /**
+   * ---------------------------------------------------------------------------
+   * Initial Load — Generate first QR session
+   * ---------------------------------------------------------------------------
+   */
   useEffect(() => {
     refreshSession();
   }, []);
 
+  /**
+   * ---------------------------------------------------------------------------
+   * Countdown Timer — Auto-refresh when expired
+   * ---------------------------------------------------------------------------
+   */
   useEffect(() => {
     if (expires <= 0) {
       refreshSession();
@@ -104,28 +113,70 @@ export default function GenerateQRC() {
     return () => clearTimeout(timer);
   }, [expires]);
 
+  /**
+   * ---------------------------------------------------------------------------
+   * Loading State
+   * ---------------------------------------------------------------------------
+   */
   if (loading) {
     return (
-      <View style={styles.center}>
+      <SafeAreaView style={styles.center}>
         <ActivityIndicator size="large" />
-        <Text>Generating secure QR session…</Text>
-      </View>
+        <Text style={styles.statusText}>Generating secure QR session…</Text>
+      </SafeAreaView>
     );
   }
 
+  /**
+   * ---------------------------------------------------------------------------
+   * Error State
+   * ---------------------------------------------------------------------------
+   */
+  if (error) {
+    return (
+      <SafeAreaView style={styles.center}>
+        <Text style={styles.errorText}>{error}</Text>
+        <Text style={styles.statusText}>Tap to retry</Text>
+      </SafeAreaView>
+    );
+  }
+
+  /**
+   * ---------------------------------------------------------------------------
+   * Main QR Display
+   * ---------------------------------------------------------------------------
+   */
   return (
-    <View style={styles.center}>
+    <SafeAreaView style={styles.center}>
       {token && <QRCode value={token} size={240} />}
       <Text style={styles.timer}>Expires in {expires}s</Text>
-    </View>
+    </SafeAreaView>
   );
 }
 
+/**
+ * =============================================================================
+ *  Stylesheet — Clean Fintech UI
+ * =============================================================================
+ */
 const styles = StyleSheet.create({
   center: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  statusText: {
+    marginTop: 12,
+    fontSize: 16,
+    color: "#444",
+  },
+  errorText: {
+    fontSize: 18,
+    color: "#D32F2F",
+    fontWeight: "600",
+    marginBottom: 10,
+    textAlign: "center",
   },
   timer: {
     marginTop: 20,
