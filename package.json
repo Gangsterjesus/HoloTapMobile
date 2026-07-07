@@ -13,10 +13,13 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.3",
-    "expo": "^51.0.39",
+    "expo": "54",
     "expo-camera": "~15.0.16",
-    "expo-router": "^3.5.24",
+    "expo-haptics": "~15.0.8",
+    "expo-image": "~3.0.11",
+    "expo-router": "3.5.24",
     "expo-splash-screen": "~0.27.7",
+    "expo-web-browser": "~15.0.11",
     "react": "18.2.0",
     "react-native": "0.74.5",
     "react-native-gesture-handler": "~2.16.1",
@@ -27,6 +30,7 @@
   },
   "devDependencies": {
     "@types/react": "~18.2.0",
+    "babel-preset-expo": "^57.0.1",
     "esbuild": "^0.28.1",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~7.1.2",

@@ -8,47 +8,55 @@
  * ============================================================
  *
  *  Purpose:
- *  Provides the initial landing screen for the HoloTap mobile
- *  application. This screen verifies backend connectivity and
- *  displays the HoloTap brand identity. It acts as the entry
- *  point for merchant and consumer flows.
+ *  Initial landing screen for the HoloTap mobile application.
+ *  Verifies backend connectivity via the /test endpoint and
+ *  displays the HoloTap brand identity. Serves as the entry
+ *  point for merchant and consumer navigation flows.
  *
  *  Architecture Notes:
- *  - Built using Expo Router (app directory structure).
- *  - Pure functional component with no business logic.
- *  - Fetches backend status from /test endpoint.
- *  - Designed for expansion into merchant dashboard navigation.
- *  - Uses expo-image for performant logo rendering.
+ *  - Expo Router (app directory structure).
+ *  - Pure functional component; UI‑only.
+ *  - Backend status fetched from src/config.js (API_URL).
+ *  - Uses expo-image for performant asset rendering.
  *
  *  Engineering Notes:
  *  - Fully TypeScript‑compatible.
- *  - No inline business logic; UI only.
- *  - All API endpoints sourced from src/config.js.
- *  - Layout optimised for cross‑platform consistency.
- *  - Safe for TM470 submission and commercial deployment.
- *
+ *  - No inline business logic; safe for TM470 submission.
+ *  - Cross‑platform layout consistency ensured.
  * ============================================================
  */
 
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Image } from "expo-image";
+
 import { API_URL } from "../../src/config";
 
 export default function HomeScreen() {
+  console.log("API_URL is:", API_URL);
+
   const [message, setMessage] = useState("Connecting...");
 
   useEffect(() => {
-    fetch(`${API_URL}/test`)
+    const url = `${API_URL}/test`;
+    console.log("Fetching:", url);
+
+    fetch(url)
       .then(res => res.text())
-      .then(text => setMessage(text))
-      .catch(() => setMessage("Connection failed"));
+      .then(text => {
+        console.log("Response:", text);
+        setMessage(text);
+      })
+      .catch(err => {
+        console.log("Fetch error:", err);
+        setMessage("Connection failed");
+      });
   }, []);
 
   return (
     <View style={styles.container}>
       <Image
-        source={require("../../src/assets/HoloTap-Badge.png")}
+        source={require("../../assets/images/icon.png")}
         style={styles.logo}
       />
       <Text style={styles.text}>{message}</Text>

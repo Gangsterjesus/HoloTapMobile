@@ -35,7 +35,8 @@
 
 import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, SafeAreaView } from "react-native";
-import { Image } from "expo-image";
+import { Image } from "react-native";
+
 import { Link, Href } from "expo-router";
 
 /**
@@ -183,10 +184,11 @@ export default function MerchantDashboard() {
   return (
     <SafeAreaView style={styles.container}>
       {/* Logo */}
-      <Image
-        source={require("../src/assets/HoloTap-Badge.png")}
-        style={styles.logo}
-      />
+    <Image
+  source={require("../../assets/images/icon.png")}
+  style={styles.logo}
+/>
+
 
       {/* Header */}
       <Text style={styles.title}>Merchant Dashboard</Text>
