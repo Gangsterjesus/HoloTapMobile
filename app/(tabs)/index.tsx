@@ -1,40 +1,52 @@
 /**
  * ============================================================
  *  HoloTap Mobile — Home Screen (Expo Router)
- *  Engineers: Raymond Newton (E5357171), Copilot Engineering Assistant
+ *  Engineers: Raymond Newton holotap engineering with help from co-pilot AI
  *  Author: Raymond Newton
- *  Date: 21 June 2026
+ *  Date: 08 July 2026
  *  © 2026 HoloTap Technologies Ltd. All rights reserved.
  * ============================================================
  *
  *  Purpose:
- *  Initial landing screen for the HoloTap mobile application.
- *  Verifies backend connectivity via the /test endpoint and
- *  displays the HoloTap brand identity. Serves as the entry
- *  point for merchant and consumer navigation flows.
+ *  Provides the initial landing screen for the HoloTap mobile
+ *  application. Displays brand identity, verifies backend
+ *  connectivity, and acts as the entry point for consumer and
+ *  merchant flows.
  *
  *  Architecture Notes:
- *  - Expo Router (app directory structure).
- *  - Pure functional component; UI‑only.
- *  - Backend status fetched from src/config.js (API_URL).
- *  - Uses expo-image for performant asset rendering.
+ *  - Built using Expo Router (app directory structure).
+ *  - Fetches backend status from /test endpoint.
+ *  - Renders HoloTapBadge component for brand identity.
+ *  - Uses expo-image for performant image rendering.
+ *  - Designed for expansion into dashboard navigation.
  *
  *  Engineering Notes:
- *  - Fully TypeScript‑compatible.
- *  - No inline business logic; safe for TM470 submission.
- *  - Cross‑platform layout consistency ensured.
+ *  - Fully TypeScript-compatible.
+ *  - No inline business logic; UI + fetch only.
+ *  - API endpoints sourced from src/config.js.
+ *  - Layout optimised for cross-platform consistency.
+ *  - Safe for TM470 submission and commercial deployment.
+ *
  * ============================================================
  */
+
+
+
+
+
+
+
+
+
+
 
 import { useEffect, useState } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Image } from "expo-image";
-
-import { API_URL } from "../../src/config";
+import HoloTapBadge from "@/src/images/image";
+import { API_URL } from "@/src/config";
 
 export default function HomeScreen() {
-  console.log("API_URL is:", API_URL);
-
   const [message, setMessage] = useState("Connecting...");
 
   useEffect(() => {
@@ -55,11 +67,14 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      <HoloTapBadge />
+
+      <Text style={styles.text}>{message}</Text>
+
       <Image
-        source={require("../../assets/images/icon.png")}
+        source={require("../assets/images/icon.png")}
         style={styles.logo}
       />
-      <Text style={styles.text}>{message}</Text>
     </View>
   );
 }
@@ -75,7 +90,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 220,
     height: 220,
-    marginBottom: 30,
+    marginTop: 30,
     borderRadius: 110,
   },
   text: {
@@ -83,5 +98,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#222",
     textAlign: "center",
+    marginTop: 20,
   },
 });
