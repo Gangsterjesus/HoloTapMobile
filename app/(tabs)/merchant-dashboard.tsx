@@ -185,7 +185,8 @@ export default function MerchantDashboard() {
     <SafeAreaView style={styles.container}>
       {/* Logo */}
     <Image
-  source={require("../../assets/images/icon.png")}
+ source={require("../../assets/icon.png")}
+
   style={styles.logo}
 />
 

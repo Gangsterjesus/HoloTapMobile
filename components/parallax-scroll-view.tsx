@@ -1,10 +1,46 @@
+
+
+/**
+ * HoloTap Engineering Patch – 14 July 2026
+ *
+ * Summary:
+ *   This component previously relied on `useScrollOffset` from
+ *   `react-native-reanimated`. That hook is intended for web environments
+ *   and internally falls back to DOM-based measurement logic. On native
+ *   platforms (Android/iOS), this fallback attempts to access `DOMRect`,
+ *   which does not exist, causing a runtime crash before the first render.
+ *
+ * Resolution:
+ *   Replaced `useScrollOffset` with `useScrollViewOffset`, the correct
+ *   native-safe hook for tracking ScrollView position in React Native.
+ *   This eliminates all DOM dependencies and resolves the crash.
+ *
+ * Impact:
+ *   - Removes DOMRect runtime error on physical devices.
+ *   - Ensures parallax header animations run using native drivers.
+ *   - No changes to layout, interpolation behaviour, or scroll logic.
+ *
+ * Author:
+ *   HoloTap Engineering
+ *
+ * Engineer Awareness:
+ *   Any future scroll-linked animations must use `useScrollViewOffset`
+ *   for native compatibility. Avoid importing web-only APIs or hooks
+ *   from Reanimated or React Native Web.
+ */
+
+
+
+
+
+
 import type { PropsWithChildren, ReactElement } from 'react';
 import { StyleSheet } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedRef,
   useAnimatedStyle,
-  useScrollOffset,
+  useScrollViewOffset,
 } from 'react-native-reanimated';
 
 import { ThemedView } from '@/components/themed-view';
@@ -25,8 +61,13 @@ export default function ParallaxScrollView({
 }: Props) {
   const backgroundColor = useThemeColor({}, 'background');
   const colorScheme = useColorScheme() ?? 'light';
+
+  // Native-safe scroll ref
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
-  const scrollOffset = useScrollOffset(scrollRef);
+
+  // FIX: useScrollViewOffset instead of useScrollOffset
+  const scrollOffset = useScrollViewOffset(scrollRef);
+
   const headerAnimatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
@@ -38,7 +79,11 @@ export default function ParallaxScrollView({
           ),
         },
         {
-          scale: interpolate(scrollOffset.value, [-HEADER_HEIGHT, 0, HEADER_HEIGHT], [2, 1, 1]),
+          scale: interpolate(
+            scrollOffset.value,
+            [-HEADER_HEIGHT, 0, HEADER_HEIGHT],
+            [2, 1, 1]
+          ),
         },
       ],
     };
@@ -48,15 +93,18 @@ export default function ParallaxScrollView({
     <Animated.ScrollView
       ref={scrollRef}
       style={{ backgroundColor, flex: 1 }}
-      scrollEventThrottle={16}>
+      scrollEventThrottle={16}
+    >
       <Animated.View
         style={[
           styles.header,
           { backgroundColor: headerBackgroundColor[colorScheme] },
           headerAnimatedStyle,
-        ]}>
+        ]}
+      >
         {headerImage}
       </Animated.View>
+
       <ThemedView style={styles.content}>{children}</ThemedView>
     </Animated.ScrollView>
   );

@@ -4,11 +4,12 @@ import { Image, StyleSheet, View } from "react-native";
 export default function HoloTapBadge() {
   return (
     <View style={styles.container}>
-      <Image
-        source={require("../assets/HoloTap-Badge.png")}
-        style={styles.badge}
-        resizeMode="contain"
-      />
+    <Image
+  source={require("../../assets/icon.png")}
+  style={styles.badge}
+  resizeMode="contain"
+/>
+
     </View>
   );
 }

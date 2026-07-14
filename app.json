@@ -4,7 +4,7 @@
     "slug": "HoloTapMobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/icon.png",
     "scheme": "holotapmobile",
     "userInterfaceStyle": "automatic",
     "ios": {

@@ -71,10 +71,12 @@ export default function HomeScreen() {
 
       <Text style={styles.text}>{message}</Text>
 
-      <Image
-        source={require("../assets/images/icon.png")}
-        style={styles.logo}
-      />
+   <Image
+ source={require("../../assets/icon.png")}
+
+  style={styles.logo}
+/>
+
     </View>
   );
 }
