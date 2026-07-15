@@ -23,6 +23,10 @@ import React, { useEffect, useState } from "react";
 import { Text, StyleSheet, View, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { API_URL } from "../src/config";
+
+
+
 import Animated, {
   useSharedValue,
   useAnimatedStyle,

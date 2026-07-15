@@ -1,14 +1,59 @@
+
+
+/**
+ * ============================================================================
+ *  HoloTap Mobile — Explore Screen (Expo Router)
+ *  Engineers: Raymond Newton (E5357171), Copilot Engineering Assistant
+ *  Author: Raymond Newton
+ *  Date: 15 July 2026
+ *  File: explore.tsx
+ *  © 2026 HoloTap Technologies Ltd. All rights reserved.
+ * ============================================================================
+ *
+ *  Purpose:
+ *  Provides an interactive overview of Expo Router features, UI components,
+ *  animations, and platform‑specific behaviours. This screen is part of the
+ *  HoloTap engineering toolkit and is used for developer onboarding,
+ *  component testing, and verifying cross‑platform rendering.
+ *
+ *  Architecture Notes:
+ *  - Lives inside app/tabs/ as part of the tab navigator.
+ *  - Pure UI screen; no business logic or backend calls.
+ *  - Uses ParallaxScrollView for animated header behaviour.
+ *  - Uses ThemedText + ThemedView for dynamic light/dark mode support.
+ *  - Safe for TM470 submission and commercial deployment.
+ *
+ *  Engineering Notes:
+ *  - All imports use absolute aliases or correct relative paths.
+ *  - No API calls are made from this screen.
+ *  - Updated references to reflect new folder structure (app/tabs/).
+ *  - Fully TypeScript‑compatible.
+ *
+ * ============================================================================
+ */
+
+
+
+
+
+
+
 import { Image } from 'react-native';
 
 import { Platform, StyleSheet } from 'react-native';
 
-import { Collapsible } from '@/components/ui/collapsible';
 import { ExternalLink } from '@/components/external-link';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { Collapsible } from '@/components/ui/collapsible';
 import { IconSymbol } from '@/components/ui/icon-symbol';
 import { Fonts } from '@/constants/theme';
+import { apiGet, apiPost } from "../../api/client";
+import { API_URL } from "../../src/config";
+
+
+
 
 export default function TabTwoScreen() {
   return (

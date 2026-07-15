@@ -36,8 +36,8 @@ import React, { useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { apiPost } from "../api/client";
-import { API_URL } from "../src/config";
+import { apiPost } from "../../api/client";
+import { API_URL } from "../../src/config";
 
 /**
  * =============================================================================

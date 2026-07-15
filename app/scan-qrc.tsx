@@ -79,6 +79,9 @@ import { useState, useEffect } from "react";
 import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useRouter } from "expo-router";
+import { API_URL } from "../src/config";
+
+
 
 export default function ScanQR() {
   const router = useRouter();

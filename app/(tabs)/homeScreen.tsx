@@ -45,6 +45,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { Image } from "expo-image";
 import HoloTapBadge from "@/src/images/image";
 import { API_URL } from "@/src/config";
+import { apiGet, apiPost } from "../../api/client";
 
 export default function HomeScreen() {
   const [message, setMessage] = useState("Connecting...");

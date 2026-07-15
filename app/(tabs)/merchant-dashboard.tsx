@@ -34,10 +34,13 @@
  */
 
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, SafeAreaView } from "react-native";
-import { Image } from "react-native";
+import { ActivityIndicator, FlatList, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-import { Link, Href } from "expo-router";
+import { API_URL } from "../../src/config";
+
+
+
+import { Href, Link } from "expo-router";
 
 /**
  * =============================================================================

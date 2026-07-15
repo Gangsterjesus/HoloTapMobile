@@ -1,4 +1,6 @@
 import { View, Text } from "react-native";
+import { apiGet } from "../api/client";
+import { API_URL } from "../src/config";
 
 export default function ProfileScreen() {
   return (
@@ -7,3 +9,4 @@ export default function ProfileScreen() {
     </View>
   );
 }
+ p

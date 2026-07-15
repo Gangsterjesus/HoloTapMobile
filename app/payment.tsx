@@ -38,6 +38,7 @@ import { Text, TextInput, Button, StyleSheet, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter, type Href } from "expo-router";
 import { apiPost } from "../api/client";
+import { API_URL } from "../src/config";
 
 /**
  * =============================================================================

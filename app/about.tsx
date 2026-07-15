@@ -30,7 +30,8 @@ import { View, Text, StyleSheet, ScrollView } from "react-native";
 import Constants from "expo-constants";
 import { SafeAreaView } from "react-native-safe-area-context";
 import React from "react";
-
+import { apiGet } from "../api/client";
+import { API_URL } from "../src/config";
 /**
  * ============================================================
  *  Metadata Extraction (Scalable + Future-Proof)

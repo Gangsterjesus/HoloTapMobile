@@ -1,14 +1,15 @@
 import { View, Text } from "react-native";
 
-import { API_URL } from "../src/config";
 
 
 
 
-export default function RefundScreen() {
+
+
+export default function DiagnosticsScreen() {
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text style={{ fontSize: 24 }}>Refund / Void Screen</Text>
+      <Text>Diagnostics Screen</Text>
     </View>
   );
 }

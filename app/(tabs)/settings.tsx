@@ -1,53 +1,27 @@
 /**
- * ============================================================
- *  HoloTap Mobile — Settings Screen
- *  Engineers: Raymond Newton (E5357171), Copilot Engineering Assistant
- *  Date: 21 June 2026
- *  © 2026 HoloTap Technologies Ltd. All rights reserved.
- * ============================================================
- *
- *  Purpose:
- *  Provides merchant‑facing configuration options including
- *  profile management, system information, app metadata, and
- *  navigation to future settings modules.
- *
- *  Architecture Notes:
- *  - Built using Expo Router (app directory structure).
- *  - Stateless UI component; no business logic.
- *  - Uses expo-constants for version metadata.
- *  - Designed for expansion into profile editing, API diagnostics,
- *    and merchant account management.
- *
- *  Engineering Notes:
- *  - Fully TypeScript‑compatible.
- *  - Consistent card‑based UI for readability.
- *  - Navigation placeholders for future screens (/profile, /about).
- *  - Safe for TM470 submission and commercial deployment.
- *
- * ============================================================
+ * =============================================================================
+ * HOLOTAP MOBILE — SETTINGS SCREEN (Flow 12)
+ * =============================================================================
  */
 
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { useRouter } from "expo-router";
 import Constants from "expo-constants";
+import { API_URL } from "../../src/config";
 
 export default function SettingsScreen() {
   const router = useRouter();
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Screen Header */}
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 40 }}>
       <Text style={styles.header}>Settings</Text>
 
-      {/* ============================
-          Merchant Profile Section
-         ============================ */}
+      {/* Merchant Profile */}
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Merchant Profile</Text>
         <Text style={styles.cardText}>Merchant: HoloTap Merchant</Text>
         <Text style={styles.cardText}>Email: merchant@example.com</Text>
 
-        {/* Navigate to profile editing */}
         <TouchableOpacity
           style={styles.button}
           onPress={() => router.push("/profile")}
@@ -56,19 +30,17 @@ export default function SettingsScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* ============================
-          System Information Section
-         ============================ */}
+      {/* System Information */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>System</Text>
-        <Text style={styles.cardText}>API Status: Online</Text>
+        <Text style={styles.cardTitle}>System Information</Text>
 
-        {/* App version pulled from app.json / app.config.js */}
+        <Text style={styles.cardText}>API Endpoint:</Text>
+        <Text style={styles.apiText}>{API_URL}</Text>
+
         <Text style={styles.cardText}>
           App Version: {Constants.expoConfig?.version || "1.0.0"}
         </Text>
 
-        {/* Navigate to About screen */}
         <TouchableOpacity
           style={styles.button}
           onPress={() => router.push("/about")}
@@ -77,9 +49,22 @@ export default function SettingsScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* ============================
-          Logout Button
-         ============================ */}
+      {/* Diagnostics */}
+      <View style={styles.card}>
+        <Text style={styles.cardTitle}>Diagnostics</Text>
+        <Text style={styles.cardText}>Device ID: {Constants.deviceId}</Text>
+        <Text style={styles.cardText}>Runtime: Expo</Text>
+
+      <TouchableOpacity
+  style={styles.button}
+  onPress={() => router.push({ pathname: "/(tabs)/diagnostics" })}
+>
+  <Text style={styles.buttonText}>Open Diagnostics</Text>
+</TouchableOpacity>
+
+      </View>
+
+      {/* Logout */}
       <TouchableOpacity style={styles.logoutButton}>
         <Text style={styles.logoutText}>Log Out</Text>
       </TouchableOpacity>
@@ -87,10 +72,6 @@ export default function SettingsScreen() {
   );
 }
 
-/* ============================================================
- *  Stylesheet
- * ============================================================
- */
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -122,8 +103,14 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     color: "#444",
   },
+  apiText: {
+    fontSize: 14,
+    marginBottom: 10,
+    color: "#007AFF",
+    fontWeight: "600",
+  },
   button: {
-    marginTop: 10,
+    marginTop: 12,
     backgroundColor: "#007AFF",
     paddingVertical: 10,
     borderRadius: 8,
