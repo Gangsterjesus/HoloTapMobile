@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.3",
-    "expo": "54",
+    "expo": "57",
     "expo-camera": "~15.0.16",
     "expo-haptics": "~15.0.8",
     "expo-image": "~3.0.11",
